@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.17.xsd">
+
+    <!-- ========================================================= -->
+    <!-- 1. COUNTRY TABLE -->
+    <!-- ========================================================= -->
+    <changeSet id="1-create-country-table" author="hn369">
+        <createTable tableName="country">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="country_uuid" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="country_code" type="VARCHAR(5)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="country_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="language_code" type="VARCHAR(5)" />
+            <column name="language_name" type="VARCHAR(100)" />
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+        </createTable>
+    </changeSet>
+
+    <!-- ========================================================= -->
+    <!-- 2. CATEGORIES -->
+    <!-- ========================================================= -->
+    <changeSet id="2-create-categories" author="hn369">
+        <createTable tableName="categories">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="parent_id" type="BIGINT"/>
+            <column name="slug" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="categories"
+                baseColumnNames="parent_id"
+                referencedTableName="categories"
+                referencedColumnNames="id"
+                constraintName="fk_categories_parent"/>
+    </changeSet>
+
+    <!-- ========================================================= -->
+    <!-- 3. CATEGORY TRANSLATIONS -->
+    <!-- ========================================================= -->
+    <changeSet id="3-create-category-translations" author="hn369">
+        <createTable tableName="category_translations">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country_uuid" type="UUID"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="description" type="TEXT"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="category_translations"
+                baseColumnNames="category_id"
+                referencedTableName="categories"
+                referencedColumnNames="id"
+                constraintName="fk_category_translation_category"/>
+
+        <addForeignKeyConstraint
+                baseTableName="category_translations"
+                baseColumnNames="country_uuid"
+                referencedTableName="country"
+                referencedColumnNames="country_uuid"
+                constraintName="fk_category_translation_country"/>
+    </changeSet>
+
+    <!-- ========================================================= -->
+    <!-- 4. PRODUCTS -->
+    <!-- ========================================================= -->
+    <changeSet id="4-create-products" author="hn369">
+        <createTable tableName="products">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="category_id" type="BIGINT"/>
+            <column name="slug" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="products"
+                baseColumnNames="category_id"
+                referencedTableName="categories"
+                referencedColumnNames="id"
+                constraintName="fk_product_category"/>
+    </changeSet>
+
+    <!-- ========================================================= -->
+    <!-- 5. PRODUCT TRANSLATIONS -->
+    <!-- ========================================================= -->
+    <changeSet id="5-create-product-translations" author="hn369">
+        <createTable tableName="product_translations">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country_uuid" type="UUID"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="short_description" type="TEXT"/>
+            <column name="long_description" type="TEXT"/>
+            <column name="currency" type="VARCHAR(3)"/>
+            <column name="price" type="DECIMAL(10,2)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="product_translations"
+                baseColumnNames="product_id"
+                referencedTableName="products"
+                referencedColumnNames="id"
+                constraintName="fk_product_translation_product"/>
+
+        <addForeignKeyConstraint
+                baseTableName="product_translations"
+                baseColumnNames="country_uuid"
+                referencedTableName="country"
+                referencedColumnNames="country_uuid"
+                constraintName="fk_product_translation_country"/>
+    </changeSet>
+
+    <!-- ========================================================= -->
+    <!-- 6. SKUS -->
+    <!-- ========================================================= -->
+    <changeSet id="6-create-skus" author="hn369">
+        <createTable tableName="skus">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sku_code" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="admin_description" type="TEXT"/>
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="skus"
+                baseColumnNames="product_id"
+                referencedTableName="products"
+                referencedColumnNames="id"
+                constraintName="fk_sku_product"/>
+    </changeSet>
+
+    <!-- ========================================================= -->
+    <!-- 7. SKU TRANSLATIONS -->
+    <!-- ========================================================= -->
+    <changeSet id="7-create-sku-translations" author="hn369">
+        <createTable tableName="sku_translations">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="sku_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country_uuid" type="UUID"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="currency" type="VARCHAR(3)"/>
+            <column name="price" type="DECIMAL(10,2)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="sku_translations"
+                baseColumnNames="sku_id"
+                referencedTableName="skus"
+                referencedColumnNames="id"
+                constraintName="fk_sku_translation_sku"/>
+
+        <addForeignKeyConstraint
+                baseTableName="sku_translations"
+                baseColumnNames="country_uuid"
+                referencedTableName="country"
+                referencedColumnNames="country_uuid"
+                constraintName="fk_sku_translation_country"/>
+    </changeSet>
+
+    <!-- ========================================================= -->
+    <!-- 8. PRODUCT IMAGES -->
+    <!-- ========================================================= -->
+    <changeSet id="8-create-product-images" author="hn369">
+        <createTable tableName="product_images">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image_url" type="TEXT"/>
+            <column name="alt_text" type="VARCHAR(255)"/>
+            <column name="display_order" type="INT" defaultValueNumeric="0"/>
+            <column name="country_uuid" type="UUID"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="product_images"
+                baseColumnNames="product_id"
+                referencedTableName="products"
+                referencedColumnNames="id"
+                constraintName="fk_product_image_product"/>
+
+        <addForeignKeyConstraint
+                baseTableName="product_images"
+                baseColumnNames="country_uuid"
+                referencedTableName="country"
+                referencedColumnNames="country_uuid"
+                constraintName="fk_product_image_country"/>
+    </changeSet>
+
+</databaseChangeLog>

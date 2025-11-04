@@ -1,0 +1,40 @@
+<!-- src/main/resources/mappers/category/CategoryMyBatisMapper.xml -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hn369.ecommerce.catalog.persistence.mapper.CategoryMyBatisMapper">
+
+    <resultMap id="CategoryRowMap" type="com.hn369.ecommerce.catalog.persistence.entity.CategoryRow">
+        <id property="id" column="c_id"/>
+        <result property="uuid" column="c_uuid"/>
+        <result property="parentId" column="c_parent_id"/>
+        <result property="slug" column="c_slug"/>
+        <result property="name" column="c_name"/>
+        <result property="isActive" column="c_is_active"/>
+
+        <result property="translationUuid" column="t_uuid"/>
+        <result property="countryUuid" column="t_country_uuid"/>
+        <result property="translatedName" column="t_name"/>
+        <result property="description" column="t_description"/>
+    </resultMap>
+
+    <select id="findAllActiveWithTranslations" resultMap="CategoryRowMap">
+        SELECT
+            c.id            AS c_id,
+            c.uuid          AS c_uuid,
+            c.parent_id     AS c_parent_id,
+            c.slug          AS c_slug,
+            c.name          AS c_name,
+            c.is_active     AS c_is_active,
+
+            t.uuid          AS t_uuid,
+            t.country_uuid  AS t_country_uuid,
+            t.name          AS t_name,
+            t.description   AS t_description
+        FROM categories c
+        LEFT JOIN category_translations t ON t.category_id = c.id
+        WHERE c.is_active = true
+        ORDER BY c.name
+    </select>
+
+</mapper>

@@ -1,0 +1,12 @@
+package com.hn369.ecommerce.catalog;
+
+//import org.junit.jupiter.api.Test;
+//import org.springframework.boot.test.context.SpringBootTest;
+
+//@SpringBootTest
+class Hn369EcommerceCatalogApplicationTests {
+
+//    @Test
+    void contextLoads() {
+    }
+}
