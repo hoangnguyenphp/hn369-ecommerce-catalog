@@ -11,7 +11,7 @@
 	</parent>
     <groupId>com.hn369.ecommerce</groupId>
     <artifactId>hn369-ecommerce-catalog</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>hn369-ecommerce-catalog</name>
     <description>HN369 E-Commerce Catalog Service</description>
     <packaging>jar</packaging>

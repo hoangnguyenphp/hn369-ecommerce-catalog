@@ -21,7 +21,7 @@ FROM eclipse-temurin:24-jdk-alpine
 WORKDIR /app
 
 # Copy JAR file from the builder stage
-COPY --from=builder /app/target/hn369-ecommerce-product-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=builder /app/target/hn369-ecommerce-catalog-1.0.0-SNAPSHOT.jar app.jar
 
 # Run the Spring Boot app
 ENTRYPOINT ["java", "-jar", "app.jar"]
