@@ -2,11 +2,10 @@ package com.hn369.ecommerce.catalog.domain.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class CategoryModel {
     private Long id;
-    private UUID uuid;
+    private String uuid;
     private Long parentId;
     private String slug;
     private String name;
@@ -18,8 +17,8 @@ public class CategoryModel {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public UUID getUuid() { return uuid; }
-    public void setUuid(UUID uuid) { this.uuid = uuid; }
+    public String getUuid() { return uuid; }
+    public void setUuid(String uuid) { this.uuid = uuid; }
 
     public Long getParentId() { return parentId; }
     public void setParentId(Long parentId) { this.parentId = parentId; }

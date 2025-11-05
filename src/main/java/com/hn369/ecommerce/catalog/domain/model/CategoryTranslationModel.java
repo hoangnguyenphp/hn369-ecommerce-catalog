@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class CategoryTranslationModel {
 	private Long id;
-    private UUID uuid;
+    private String uuid;
     private String slug;
     private String name;           // Localized
     private String description;    // Localized
@@ -20,8 +20,8 @@ public class CategoryTranslationModel {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public UUID getUuid() { return uuid; }
-    public void setUuid(UUID uuid) { this.uuid = uuid; }
+    public String getUuid() { return uuid; }
+    public void setUuid(String uuid) { this.uuid = uuid; }
 
     public String getSlug() { return slug; }
     public void setSlug(String slug) { this.slug = slug; }
