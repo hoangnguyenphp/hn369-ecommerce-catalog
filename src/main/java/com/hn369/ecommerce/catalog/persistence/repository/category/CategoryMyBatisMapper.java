@@ -1,12 +1,16 @@
 package com.hn369.ecommerce.catalog.persistence.repository.category;
 
-import java.util.List;
-
+import com.hn369.ecommerce.catalog.domain.model.CategoryModel;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
-import com.hn369.ecommerce.catalog.persistence.entity.CategoryRow;
+import java.util.List;
 
 @Mapper
 public interface CategoryMyBatisMapper {
-	List<CategoryRow> findAllActiveWithTranslations();
+
+    List<CategoryModel> findAllCategoriesByCountry(
+            @Param("countryCode") String countryCode,
+            @Param("lang") String lang
+    );
 }
