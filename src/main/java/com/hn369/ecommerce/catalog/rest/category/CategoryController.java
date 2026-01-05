@@ -1,6 +1,6 @@
 package com.hn369.ecommerce.catalog.rest.category;
 
-import com.hn369.ecommerce.catalog.application.service.category.CategoryApplicationService;
+import com.hn369.ecommerce.catalog.application.category.CategoryApplicationService;
 import com.hn369.ecommerce.catalog.domain.model.CategoryModel;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,4 +1,4 @@
-package com.hn369.ecommerce.catalog.application.service.category;
+package com.hn369.ecommerce.catalog.application.category;
 
 import com.hn369.ecommerce.catalog.domain.model.CategoryModel;
 import com.hn369.ecommerce.catalog.domain.service.category.CategoryDomainService;

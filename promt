@@ -1,10 +1,27 @@
 This is code structure:
 
+com.hn369.ecommerce.catalog.rest.category.CategoryController
+com.hn369.ecommerce.catalog.application.service.category.CategoryApplicationService
+com.hn369.ecommerce.catalog.domain.service.category.CategoryDomainService
+com.hn369.ecommerce.catalog.domain.service.category.CategoryDomainRepositoryIfc
+com.hn369.ecommerce.catalog.domain.model.CategoryModel
+com.hn369.ecommerce.catalog.domain.model.CategoryTranslationModel
+com.hn369.ecommerce.catalog.persistence.repository.category.CategoryRepositoryImpl
+com.hn369.ecommerce.catalog.persistence.repository.category.CategoryMyBatisMapper
+com.hn369.ecommerce.catalog.persistence.repository.category.JpaCategoryRepository
+com.hn369.ecommerce.catalog.persistence.entity.CategoryEntity
+com.hn369.ecommerce.catalog.persistence.entity.CategoryTranslationEntity
+
+
+------------
+
+This is code structure:
+
 com.hn369.ecommerce.catalog.rest.product.ProductController
 com.hn369.ecommerce.catalog.application.service.product.ProductApplicationService
 com.hn369.ecommerce.catalog.domain.service.product.ProductDomainService
 com.hn369.ecommerce.catalog.domain.service.product.ProductDomainRepositoryIfc
-Open Declarationcom.hn369.ecommerce.catalog.domain.model.ProductModel
+com.hn369.ecommerce.catalog.domain.model.ProductModel
 com.hn369.ecommerce.catalog.domain.model.ProductTranslationModel
 com.hn369.ecommerce.catalog.persistence.repository.product.ProductRepositoryImpl
 com.hn369.ecommerce.catalog.persistence.repository.product.ProductMyBatisMapper
@@ -12,7 +29,76 @@ com.hn369.ecommerce.catalog.persistence.repository.product.JpaProductRepository
 com.hn369.ecommerce.catalog.persistence.entity.ProductEntity
 com.hn369.ecommerce.catalog.persistence.entity.ProductTranslationEntity
 
-and this is liquibase db change log:
+com.hn369.ecommerce.catalog.rest.sku.SkuController
+com.hn369.ecommerce.catalog.application.service.sku.SkuApplicationService
+com.hn369.ecommerce.catalog.domain.service.sku.SkuDomainService
+com.hn369.ecommerce.catalog.domain.service.sku.SkuDomainRepositoryIfc
+com.hn369.ecommerce.catalog.domain.model.SkuModel
+com.hn369.ecommerce.catalog.domain.model.SkuTranslationModel
+com.hn369.ecommerce.catalog.persistence.repository.sku.SkuRepositoryImpl
+com.hn369.ecommerce.catalog.persistence.repository.sku.SkuMyBatisMapper
+com.hn369.ecommerce.catalog.persistence.repository.sku.JpaSkuRepository
+com.hn369.ecommerce.catalog.persistence.entity.SkuEntity
+com.hn369.ecommerce.catalog.persistence.entity.SkuTranslationEntity
+
+and these are liquibase db changelogs:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.17.xsd">
+
+    <!-- 1. user table -->
+    <changeSet id="1-create-user" author="hoang">
+        <createTable tableName="app_user">
+            <column name="user_id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_name" type="VARCHAR(255)">
+            	<constraints unique="true" nullable="false"/>
+            </column>
+            <column name="user_uuid" type="VARCHAR(100)">
+            	<constraints unique="true" nullable="false"/>
+            </column>
+            <column name="user_first_name" type="VARCHAR(255)"/>
+            <column name="user_last_name" type="VARCHAR(255)"/>
+        </createTable>
+        
+	    <insert tableName="app_user">
+	        <column name="user_name" value="admin"/>
+	        <column name="user_uuid" value="9c2d9d8c-26d1-4b02-8f12-7b18b7c6f693"/>
+	        <column name="user_first_name" value="admin"/>
+	        <column name="user_last_name" value="admin 01"/>
+	    </insert>
+    </changeSet>
+
+    <!-- ========================================================= -->
+    <!-- 2. COUNTRY TABLE -->
+    <!-- ========================================================= -->
+    <changeSet id="2-create-country-table" author="hn369">
+        <createTable tableName="country">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="country_uuid" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="country_code" type="VARCHAR(5)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="country_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="language_code" type="VARCHAR(5)" />
+            <column name="language_name" type="VARCHAR(100)" />
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
+
 
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
@@ -306,61 +392,7 @@ and this is liquibase db change log:
 </databaseChangeLog>
 
 
-<?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.17.xsd">
-
-    <!-- 1. user table -->
-    <changeSet id="1-create-user" author="hoang">
-        <createTable tableName="app_user">
-            <column name="user_id" type="BIGSERIAL">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="user_name" type="VARCHAR(255)">
-            	<constraints unique="true" nullable="false"/>
-            </column>
-            <column name="user_uuid" type="VARCHAR(100)">
-            	<constraints unique="true" nullable="false"/>
-            </column>
-            <column name="user_first_name" type="VARCHAR(255)"/>
-            <column name="user_last_name" type="VARCHAR(255)"/>
-        </createTable>
-        
-	    <insert tableName="app_user">
-	        <column name="user_name" value="admin"/>
-	        <column name="user_uuid" value="9c2d9d8c-26d1-4b02-8f12-7b18b7c6f693"/>
-	        <column name="user_first_name" value="admin"/>
-	        <column name="user_last_name" value="admin 01"/>
-	    </insert>
-    </changeSet>
-
-    <!-- ========================================================= -->
-    <!-- 2. COUNTRY TABLE -->
-    <!-- ========================================================= -->
-    <changeSet id="2-create-country-table" author="hn369">
-        <createTable tableName="country">
-            <column name="id" type="BIGSERIAL">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="country_uuid" type="UUID">
-                <constraints nullable="false" unique="true"/>
-            </column>
-            <column name="country_code" type="VARCHAR(5)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-            <column name="country_name" type="VARCHAR(100)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="language_code" type="VARCHAR(5)" />
-            <column name="language_name" type="VARCHAR(100)" />
-            <column name="created_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
-            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="NOW()"/>
-        </createTable>
-    </changeSet>
-</databaseChangeLog>
 
 so write the api for getting all categories by country_code in tree format
+
 

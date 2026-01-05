@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hn369.ecommerce.catalog.persistence.repository.product.ProductMyBatisMapper">
+
+    <!-- HOME PRODUCTS -->
+    <select id="getHomeProducts" resultType="com.hn369.ecommerce.catalog.domain.model.product.ProductModel">
+        SELECT p.id, p.uuid, p.slug,
+               t.name, t.short_description AS shortDescription, t.currency, t.price
+        FROM products p
+        LEFT JOIN product_translations t
+          ON t.product_id = p.id
+         AND t.country_uuid = (SELECT country_uuid FROM country WHERE country_code = #{country})
+        WHERE p.is_active = TRUE
+        ORDER BY p.created_at DESC
+        LIMIT 20
+    </select>
+
+    <!-- MAIN PRODUCT DETAIL QUERY -->
+    <select id="findProductDetailBySlug"
+            resultMap="ProductDetailResultMap">
+
+        SELECT 
+            p.id              AS product_id,
+            p.uuid            AS product_uuid,
+            p.slug            AS product_slug,
+            p.category_id     AS category_id,
+            pt.name           AS product_name,
+            pt.short_description AS product_short_description,
+            pt.long_description AS product_long_description,
+
+            -- PRODUCT IMAGES
+            pi.uuid           AS product_image_uuid,
+            pi.image_url      AS product_image_url,
+            pi.alt_text       AS product_image_alt,
+            pi.display_order  AS product_image_order,
+
+            -- SKU
+            s.id              AS sku_id,
+            s.uuid            AS sku_uuid,
+            s.sku_code        AS sku_code,
+
+            -- SKU TRANSLATION
+            st.name           AS sku_name,
+            st.currency       AS sku_currency,
+            st.price          AS sku_price,
+
+            -- SKU IMAGE
+            si.uuid           AS sku_image_uuid,
+            si.image_url      AS sku_image_url,
+            si.alt_text       AS sku_image_alt,
+            si.display_order  AS sku_image_order
+
+        FROM products p
+        LEFT JOIN product_translations pt 
+            ON pt.product_id = p.id
+           AND pt.country_uuid = #{countryUuid}
+
+        LEFT JOIN product_images pi
+            ON pi.product_id = p.id
+           AND (pi.country_uuid = #{countryUuid} OR pi.country_uuid IS NULL)
+
+        LEFT JOIN skus s
+            ON s.product_id = p.id
+
+        LEFT JOIN sku_translations st
+            ON st.sku_id = s.id
+           AND st.country_uuid = #{countryUuid}
+
+        LEFT JOIN sku_images si
+            ON si.sku_id = s.id
+           AND (si.country_uuid = #{countryUuid} OR si.country_uuid IS NULL)
+
+        WHERE p.slug = #{slug}
+    </select>
+
+    <!-- RESULT MAP WITH NESTED COLLECTIONS -->
+    <resultMap id="ProductDetailResultMap" type="com.hn369.ecommerce.catalog.domain.model.product.ProductModel">
+        <!-- PRODUCT FIELDS -->
+        <id property="id" column="product_id"/>
+        <result property="uuid" column="product_uuid"/>
+        <result property="slug" column="product_slug"/>
+        <result property="name" column="product_name"/>
+        <result property="shortDescription" column="product_short_description"/>
+        <result property="longDescription" column="product_long_description"/>
+
+        <!-- PRODUCT IMAGES -->
+        <collection property="images" ofType="com.hn369.ecommerce.catalog.domain.model.product.ProductImageModel">
+            <result property="uuid" column="product_image_uuid"/>
+            <result property="imageUrl" column="product_image_url"/>
+            <result property="altText" column="product_image_alt"/>
+            <result property="displayOrder" column="product_image_order"/>
+        </collection>
+
+        <!-- SKUS -->
+        <collection property="skus" ofType="com.hn369.ecommerce.catalog.domain.model.product.SkuModel">
+            <id property="id" column="sku_id"/>
+            <result property="uuid" column="sku_uuid"/>
+            <result property="skuCode" column="sku_code"/>
+            <result property="name" column="sku_name"/>
+            <result property="currency" column="sku_currency"/>
+            <result property="price" column="sku_price"/>
+
+            <!-- SKU IMAGES -->
+            <collection property="images" ofType="com.hn369.ecommerce.catalog.domain.model.product.SkuImageModel">
+                <result property="uuid" column="sku_image_uuid"/>
+                <result property="imageUrl" column="sku_image_url"/>
+                <result property="altText" column="sku_image_alt"/>
+                <result property="displayOrder" column="sku_image_order"/>
+            </collection>
+        </collection>
+
+    </resultMap>
+
+</mapper>
